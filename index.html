@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FWC 2026 Schedule</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar">
+        <div>
+          <p class="kicker">FIFA World Cup 2026</p>
+          <h1>Interaktywny terminarz</h1>
+        </div>
+        <div class="actions">
+          <button id="todayBtn" class="icon-button" title="Pokaż najbliższe mecze" aria-label="Pokaż najbliższe mecze">◎</button>
+          <button id="refreshBtn" class="primary-button">Aktualizuj wyniki</button>
+        </div>
+      </section>
+
+      <section class="filters" aria-label="Filtry terminarza">
+        <label>
+          Szukaj
+          <input id="searchInput" type="search" placeholder="Drużyna, miasto, stadion..." autocomplete="off" />
+        </label>
+        <label>
+          Faza
+          <select id="stageFilter"></select>
+        </label>
+        <label>
+          Grupa
+          <select id="groupFilter"></select>
+        </label>
+        <label>
+          Miasto
+          <select id="cityFilter"></select>
+        </label>
+        <label class="endpoint">
+          Źródło wyników
+          <input id="endpointInput" type="url" />
+        </label>
+      </section>
+
+      <section class="status-strip">
+        <div>
+          <span class="metric" id="visibleCount">0</span>
+          <span>meczów w widoku</span>
+        </div>
+        <div>
+          <span class="metric" id="playedCount">0</span>
+          <span>z wynikiem</span>
+        </div>
+        <div id="updateStatus">Gotowe</div>
+      </section>
+
+      <section class="tabs" role="tablist" aria-label="Widok">
+        <button class="tab active" data-view="matches" role="tab">Mecze</button>
+        <button class="tab" data-view="groups" role="tab">Grupy</button>
+        <button class="tab" data-view="bracket" role="tab">Drabinka</button>
+      </section>
+
+      <section id="matchesView" class="view active">
+        <div id="matchList" class="match-list"></div>
+      </section>
+
+      <section id="groupsView" class="view">
+        <div id="groupsGrid" class="groups-grid"></div>
+      </section>
+
+      <section id="bracketView" class="view">
+        <div id="bracketGrid" class="bracket-grid"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
