@@ -27,7 +27,11 @@ http://127.0.0.1:8877
 
 ## Wyniki
 
-Przycisk `Aktualizuj wyniki` pobiera JSON z pola `Zrodlo wynikow`. Domyslnie jest to `./results.sample.json`.
+Przycisk `Aktualizuj wyniki` pobiera JSON z pola `Zrodlo wynikow`. Domyslnie jest to `./results.sample.json`, czyli pusty przyklad bez bramek. Zeby zobaczyc testowa aktualizacje wynikow i tabel, wpisz w pole zrodla:
+
+```text
+./results.example-with-scores.json
+```
 
 Format:
 
@@ -40,7 +44,7 @@ Format:
 }
 ```
 
-Pole `id` odpowiada numerowi meczu FIFA. Zrodlem moze byc lokalny plik JSON, wlasny endpoint lub maly proxy-serwer laczacy sie z dostawca wynikow.
+Pole `id` odpowiada numerowi meczu FIFA. Zrodlem moze byc lokalny plik JSON, wlasny endpoint lub maly proxy-serwer laczacy sie z dostawca wynikow. Tabele grup odswiezaja sie automatycznie po kazdym imporcie wynikow z bramkami.
 
 ## GitHub Pages
 

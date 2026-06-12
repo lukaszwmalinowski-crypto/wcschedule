@@ -262,6 +262,46 @@ function renderBracket() {
   }).join("");
 }
 
+function firstNumber(...values) {
+  for (const value of values) {
+    if (value === null || value === undefined || value === "") continue;
+    const number = Number(value);
+    if (Number.isFinite(number)) return number;
+  }
+  return null;
+}
+
+function normalizeUpdate(update) {
+  return {
+    id: Number(update.id ?? update.matchId ?? update.matchID ?? update.matchNumber ?? update.match_no),
+    homeScore: firstNumber(
+      update.homeScore,
+      update.home_score,
+      update.homeGoals,
+      update.home_goals,
+      update.score?.home,
+      update.score?.homeScore,
+      update.score?.fullTime?.home,
+      update.score?.regularTime?.home,
+      update.home?.score,
+      update.teams?.home?.score
+    ),
+    awayScore: firstNumber(
+      update.awayScore,
+      update.away_score,
+      update.awayGoals,
+      update.away_goals,
+      update.score?.away,
+      update.score?.awayScore,
+      update.score?.fullTime?.away,
+      update.score?.regularTime?.away,
+      update.away?.score,
+      update.teams?.away?.score
+    ),
+    status: update.status || update.matchStatus || update.state
+  };
+}
+
 async function refreshResults() {
   const endpoint = els.endpoint.value.trim();
   if (!endpoint) return;
@@ -273,18 +313,25 @@ async function refreshResults() {
     const payload = await response.json();
     const updates = Array.isArray(payload) ? payload : payload.matches;
     if (!Array.isArray(updates)) throw new Error("Nieprawidłowy format JSON");
-    let applied = 0;
-    for (const update of updates) {
-      const match = matches.find(item => item.id === Number(update.id));
+    let matched = 0;
+    let scored = 0;
+    for (const rawUpdate of updates) {
+      const update = normalizeUpdate(rawUpdate);
+      const match = matches.find(item => item.id === update.id);
       if (!match) continue;
-      match.homeScore = update.homeScore === null || update.homeScore === undefined || update.homeScore === "" ? null : Number(update.homeScore);
-      match.awayScore = update.awayScore === null || update.awayScore === undefined || update.awayScore === "" ? null : Number(update.awayScore);
-      if (!Number.isFinite(match.homeScore)) match.homeScore = null;
-      if (!Number.isFinite(match.awayScore)) match.awayScore = null;
-      match.status = update.status || (match.homeScore === null ? "scheduled" : "finished");
-      applied++;
+      matched++;
+      if (update.homeScore !== null && update.awayScore !== null) {
+        match.homeScore = update.homeScore;
+        match.awayScore = update.awayScore;
+        match.status = update.status || "finished";
+        scored++;
+      } else if (update.status) {
+        match.status = update.status;
+      }
     }
-    els.status.textContent = `Zaktualizowano ${applied} meczów`;
+    els.status.textContent = scored
+      ? `Wczytano wyniki: ${scored} / ${matched} meczów`
+      : `Pobrano ${matched} meczów, ale bez bramek`;
     renderAll();
   } catch (error) {
     els.status.textContent = `Nie udało się pobrać wyników: ${error.message}`;
